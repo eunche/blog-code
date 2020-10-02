@@ -10,7 +10,10 @@
 <link rel="stylesheet" href="{% static 'map/css/search_map.css' %}">
 {% endblock link %}
 
-{% block head_script %}{% endblock head_script %}
+{% block head_script %}
+<script type="text/javascript"
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1087e575a59f0ecd45887863b56a20f1&libraries=services"></script>
+{% endblock head_script %}
 
 
 
@@ -18,10 +21,10 @@
 
 
 {% block content %}
+<div id="map"></div>
 
-
+{% endblock content %}
 
 {% block script %}
-<script src="{% static 'map/js/search_map.js' %}"></script>
+<script src="{% static 'map/js/searchMap.js' %}"></script>
 {% endblock script %}
-{% endblock content %}
