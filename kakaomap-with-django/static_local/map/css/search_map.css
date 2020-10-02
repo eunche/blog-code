@@ -5,18 +5,98 @@
     align-items: center;
 }
 
-#map{
+.map{
     width: 100%;
     height: 100%;
 }
 
-#search_wrapper{
+.search-wrapper{
     z-index: 100;
     position: absolute;
     left: 15px;
     top: 15px;
     width: 300px;
     height: calc(90vh - 60px);
-    background-color:rgba(255,255,255,0.4);
+    background-color:rgba(255,255,255,0.6);
     border-radius: 5px;
+    margin: 0;
+    padding: 15px;
+    overflow-y: scroll;
 }
+
+.search-form {
+    display: flex;
+    align-items: center;
+    padding: 3px 0;
+    margin-bottom: 5px;
+}
+
+.search-form__keyword{
+    width: 200px;
+    height: 30px;
+    margin-right: 15px;
+    padding: 4px 8px;
+}
+
+.search-form__button{
+    width: 50px;
+    height: 30px;
+}
+
+.search-results__info{
+    display: flex;
+    padding: 10px 0;
+    border-bottom: solid thin black;
+}
+
+.info-marker-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 55.45px;
+}
+
+.info-marker{
+    background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;
+    width:36px;
+    height:37px;
+}
+
+.info-text{
+    width: 197.75px;
+}
+
+.info-text > p{
+    margin-bottom: 10px;
+    font-size: 12.5px;
+    word-break:break-all;
+    line-height: 1.4;
+}
+
+.info-text > p:last-child{
+    margin-bottom: 0;
+}
+
+.info-text__address{
+    color: #858585;
+}
+
+.info-text__phone-number{
+    color:green;
+}
+
+.marker-1 {background-position: 0 -10px;}
+.marker-2 {background-position: 0 -56px;}
+.marker-3 {background-position: 0 -102px}
+.marker-4 {background-position: 0 -148px;}
+.marker-5 {background-position: 0 -194px;}
+.marker-6 {background-position: 0 -240px;}
+.marker-7 {background-position: 0 -286px;}
+.marker-8 {background-position: 0 -332px;}
+.marker-9 {background-position: 0 -378px;}
+.marker-10 {background-position: 0 -423px;}
+.marker-11 {background-position: 0 -470px;}
+.marker-12 {background-position: 0 -516px;}
+.marker-13 {background-position: 0 -562px;}
+.marker-14 {background-position: 0 -608px;}
+.marker-15 {background-position: 0 -654px;}
