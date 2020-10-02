@@ -52,16 +52,31 @@ const clickStar = (event) => {
 const displayPlaces = (data) => {
     const results = document.querySelector(".search-results");
 
-    // 이미 한번 검색을 했었다면, 재검색 이전에 이전 검색 결과 / 마커 / 오버레이 / bounds 새로 생성
+    // 이미 한번 검색을 했었다면, 재검색 이전에 이전 검색 결과 / 마커 / 오버레이 / bounds 새로 생성 / 마커클러스터 새로생성
     if (results.hasChildNodes()) {
         results.innerHTML = ``;
     }
-    for (const marker of markers) {
-        marker.setMap(null);
-    }
+
+
     removeOverlayAll()
+
     delete bounds;
     bounds = new kakao.maps.LatLngBounds();
+
+    if (markers.length > 0) {
+        clusterer.removeMarkers(markers)
+        delete clusterer;
+        for (const marker of markers) {
+            marker.setMap(null);
+        }
+        markers = [];
+    }
+    clusterer = new kakao.maps.MarkerClusterer({
+        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
+        minLevel: 8 // 클러스터 할 최소 지도 레벨 
+    });
+
 
 
     // 검색 결과 전부 표시
@@ -151,6 +166,9 @@ const displayPlaces = (data) => {
     }
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
     map.setBounds(bounds);
+
+    // 클러스터에 모든 마커 set
+    clusterer.addMarkers(markers)
 }
 
 
@@ -206,6 +224,9 @@ let overlays = [];
 // 검색결과가 나왔을때, 지도의 확대범위를 정하는 변수 bounds 초기화
 let bounds;
 
+// 마커클러스터 초기화
+let clusterer;
+
 
 
 
@@ -225,5 +246,4 @@ let options = {
 
 // (mapElement, options)을 토대로 map 객체를 생성
 let map = new kakao.maps.Map(mapElement, options);
-
 
