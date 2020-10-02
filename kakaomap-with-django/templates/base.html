@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <!-- meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block meta %}{% endblock meta %}
+
+    <!-- title -->
+    <title>{% block title %}{% endblock title %}</title>
+
+    <!-- link -->
+    <link rel="stylesheet" href="{% static 'core/css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/base.css' %}">
+    {% block link %}{% endblock link %}
+
+    <!-- head Script -->
+    {% block head_script %}{% endblock head_script %}
+</head>
+
+<body>
+    <!-- main content -->
+    {% block content %}{% endblock content %}
+
+    <!-- Script -->
+    {% block script %}{% endblock script %}
+</body>
+
+</html>
