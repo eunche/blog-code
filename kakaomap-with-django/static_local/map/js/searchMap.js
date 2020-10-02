@@ -1,7 +1,49 @@
+// 떠있는 오버레이를 전부 지우는 함수 정의
 const removeOverlayAll = () => {
     for (const overlay of overlays) {
         overlay.setMap(null)
     }
+}
+
+
+// 마커가 생기면, DB에 의해 별 색을 업데이트하는 함수 정의
+const updateStarColor = (title) => {
+    const star = document.querySelector('.jsStar')
+
+
+    $.ajax({
+        url: update_api_url, // 클라이언트가 요청을 보낼 서버의 URL 주소
+        data: { title, csrfmiddlewaretoken: csrf },                // HTTP 요청과 함께 서버로 보낼 데이터
+        type: "POST",                             // HTTP 요청 방식(GET, POST)
+        dataType: "json"                         // 서버에서 보내줄 데이터의 타입
+    }).done(function (json) {
+        star.innerText = json.text
+        star.style.color = json.color
+    })
+}
+
+
+
+// 오버레이의 별을 클릭하면 데이터 변경이 적용되는 함수 정의
+const clickStar = (event) => {
+    const info = event.target.parentElement.parentElement.parentElement;
+    const title = info.querySelector(".jsplaceName").innerText;
+    const address = info.querySelector(".ellipsis").innerText;
+    const jibun = info.querySelector(".jibun").innerText;
+    const lat = info.querySelector("#jsLat").value;
+    const lng = info.querySelector("#jsLng").value;
+    const link = info.querySelector(".link").getAttribute('href')
+
+    $.ajax({
+        url: api_url, // 클라이언트가 요청을 보낼 서버의 URL 주소
+        data: { title, address, jibun, lat, lng, link, csrfmiddlewaretoken: csrf },                // HTTP 요청과 함께 서버로 보낼 데이터
+        type: "POST",                             // HTTP 요청 방식(GET, POST)
+        dataType: "json"                         // 서버에서 보내줄 데이터의 타입
+    }).done(function (json) {
+
+        info.querySelector(".jsStar").innerText = json.text
+        info.querySelector(".jsStar").style.color = json.color
+    })
 }
 
 
@@ -34,7 +76,6 @@ const displayPlaces = (data) => {
                 <p><strong>${i.place_name}</strong></p>
                 <p>${i.address_name}</p>
                 <p class="info-text__address">${i.road_address_name}</p>
-                <p class="info-text__phone-number">${i.phone}</p>
             </div>
         </ul>
         `)
@@ -53,12 +94,12 @@ const displayPlaces = (data) => {
         <div class="wrap">
             <div class="info">
                 <div class="title">
-                    ${i.place_name}
+                    <span class="jsplaceName">${i.place_name}</span>
                     <div class="close" onclick="removeOverlayAll()" title="닫기"></div>
                 </div>
                 <div class="body">
-                    <div class="img">
-                        <span>★</span>
+                    <div onclick="clickStar(event)" class="img">
+                        <span class="jsStar">☆</span>
                     </div>
                     <div class="desc">
                         <div class="ellipsis">${i.road_address_name}</div>
@@ -66,9 +107,12 @@ const displayPlaces = (data) => {
                         <div><a href="${i.place_url}" target="_blank" class="link">홈페이지</a></div>
                     </div>
                 </div>
-            </div>  
+                <input type="hidden" id="jsLat" value="${i.y}"> 
+                <input type="hidden" id="jsLng" value="${i.x}"> 
+            </div>
         </div>
         `
+
 
         // 정보창(오버레이) 객체를 생성하고, content는 위에 선언해놓은 overlayContent로,
         // 오버레이가 위치할 map은 이전에 생성한 map객체로, 오버레이의 위치는 마커위로 설정
@@ -82,11 +126,13 @@ const displayPlaces = (data) => {
         // overlays 배열에 overlay를 추가
         overlays.push(overlay)
 
-        // 위에 생성한 마커 객체(marker)에, 클릭하면 마커가 화면에 보이도록 이벤트를 추가(한번만 해주면 됨)
+        // 위에 생성한 마커 객체(marker)에, 클릭하면 오버레이가 화면에 보이도록 이벤트를 추가(한번만 해주면 됨)
         kakao.maps.event.addListener(marker, 'click', () => {
             removeOverlayAll()
             overlay.setMap(map);
             map.panTo(marker.getPosition());
+            // DB갱신을 통한 별 색상 변경
+            updateStarColor(i.place_name)
         });
 
         // 검색 결과를 클릭하면, 해당 좌표로 이동 및 오버레이 띄우게 설정
@@ -94,6 +140,8 @@ const displayPlaces = (data) => {
             map.panTo(marker.getPosition())
             removeOverlayAll()
             overlay.setMap(map);
+            // DB갱신을 통한 별 색상 변경
+            updateStarColor(i.place_name)
         })
 
         // 검색 결과가 나왔을때, 지도의 확대정도를 정하는 bounds 변수에 마커의 좌표 추가
@@ -157,6 +205,8 @@ let overlays = [];
 
 // 검색결과가 나왔을때, 지도의 확대범위를 정하는 변수 bounds 초기화
 let bounds;
+
+
 
 
 

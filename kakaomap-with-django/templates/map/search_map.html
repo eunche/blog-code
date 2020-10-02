@@ -33,5 +33,10 @@
 {% endblock content %}
 
 {% block script %}
+<script>
+    const csrf = "{{csrf_token}}"
+    const api_url = "{% url 'map:add_favorite' %}"
+    const update_api_url = "{% url 'map:update_favorite' %}"
+</script>
 <script src="{% static 'map/js/searchMap.js' %}"></script>
 {% endblock script %}

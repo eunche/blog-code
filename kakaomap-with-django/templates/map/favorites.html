@@ -7,10 +7,13 @@
 {% block title %}Favorites{% endblock title %}
 
 {% block link %}
-<link rel="stylesheet" href="{% static 'map/css/favorites.css' %}">
+<link rel="stylesheet" href="{% static 'map/css/search_map.css' %}">
 {% endblock link %}
 
-{% block head_script %}{% endblock head_script %}
+{% block head_script %}
+<script type="text/javascript"
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1087e575a59f0ecd45887863b56a20f1&libraries=services,clusterer"></script>
+{% endblock head_script %}
 
 
 
@@ -18,9 +21,20 @@
 
 
 {% block content %}
-
+<div class="map"></div>
+<div class="search-wrapper">
+    <ul class="search-results">
+    </ul>
+</div>
 {% endblock content %}
 
 {% block script %}
+<script>
+    const favs = "{{favs}}"
+    const api_url = "{% url 'map:add_favorite' %}"
+    const update_api_url = "{% url 'map:update_favorite' %}"
+    const get_api_url = "{% url 'map:get_favorite' %}"
+    const csrf = "{{csrf_token}}"
+</script>
 <script src="{% static 'map/js/favorites.js' %}"></script>
 {% endblock script %}
