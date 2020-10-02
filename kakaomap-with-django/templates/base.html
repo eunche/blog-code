@@ -22,8 +22,12 @@
 </head>
 
 <body>
+    {% include "partials/navigation.html" %}
+
     <!-- main content -->
-    {% block content %}{% endblock content %}
+    <div id="root">
+        {% block content %}{% endblock content %}
+    </div>
 
     <!-- Script -->
     {% block script %}{% endblock script %}
