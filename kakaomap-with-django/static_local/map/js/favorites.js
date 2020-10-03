@@ -17,6 +17,8 @@ const updateStarColor = (title) => {
         type: "POST",                             // HTTP 요청 방식(GET, POST)
         dataType: "json"                         // 서버에서 보내줄 데이터의 타입
     }).done(function (json) {
+        console.log(json)
+        console.log(star)
         star.innerText = json.text
         star.style.color = json.color
     })
@@ -95,86 +97,88 @@ $.ajax({
     type: "POST",                                   // HTTP 요청 방식(GET, POST)
     dataType: "json"                                // 서버에서 보내줄 데이터의 타입
 }).done(function (json) {
-    let results = document.querySelector(".search-results");
-    for (const fav of json) {
-        let index = 1;
+    if (json.length > 0) {
+        let results = document.querySelector(".search-results");
+        for (const fav of json) {
+            let index = 1;
 
-        // 왼쪽 창에 fav리스트 추가
-        results.insertAdjacentHTML('beforeend', `
-        <ul class="search-results__info">
-            <div class="info-marker-wrapper">
-                <div class="info-marker marker-${index}"></div>
-            </div>
-            <div class="info-text">
-                <p><strong>${fav.fields.title}</strong></p>
-                <p>${fav.fields.address}</p>
-                <p class="info-text__address">${fav.fields.jibun}</p>
-            </div>
-        </ul>
-        `)
-
-        // 마커 객체를 생성하고, 표시할곳은 map객체 / 마커의 좌표는 position에 해당되는 값으로 설정
-        let marker = new kakao.maps.Marker({
-            map: map,
-            position: new kakao.maps.LatLng(fav.fields.lat, fav.fields.lng)
-        });
-
-        // 마커를 markers배열에 추가
-        markers.push(marker)
-
-        // 추가된 마커를 bounds에 추가
-        bounds.extend(marker.getPosition())
-
-        // 마커를 클릭했을때 나올 정보창(오버레이)의 HTML을 변수에 선언
-        let overlayContent = `
-        <div class="wrap">
-            <div class="info">
-                <div class="title">
-                    <span class="jsplaceName">${fav.fields.title}</span>
-                    <div class="close" onclick="removeOverlayAll()" title="닫기"></div>
+            // 왼쪽 창에 fav리스트 추가
+            results.insertAdjacentHTML('beforeend', `
+            <ul class="search-results__info">
+                <div class="info-marker-wrapper">
+                    <div class="info-marker marker-${index}"></div>
                 </div>
-                <div class="body">
-                    <div onclick="clickStar(event)" class="img">
-                        <span class="jsStar">☆</span>
-                    </div>
-                    <div class="desc">
-                        <div class="ellipsis">${fav.fields.address}</div>
-                        <div class="jibun ellipsis">${fav.fields.jibun}</div>
-                        <div><a href="${fav.fields.url}" target="_blank" class="link">홈페이지</a></div>
-                    </div>
+                <div class="info-text">
+                    <p><strong>${fav.fields.title}</strong></p>
+                    <p>${fav.fields.address}</p>
+                    <p class="info-text__address">${fav.fields.jibun}</p>
                 </div>
-                <input type="hidden" id="jsLat" value="${fav.fields.lat}"> 
-                <input type="hidden" id="jsLng" value="${fav.fields.lng}"> 
-            </div>
-        </div>
-        `
-        // 정보창(오버레이) 객체를 생성하고, content는 위에 선언해놓은 overlayContent로,
-        // 오버레이가 위치할 map은 이전에 생성한 map객체로, 오버레이의 위치는 마커위로 설정
-        let overlay = new kakao.maps.CustomOverlay({
-            content: overlayContent,
-            map: map,
-            position: marker.getPosition()
-        });
-        overlays.push(overlay)
-        overlay.setMap(null)
-        // 위에 생성한 마커 객체(marker)에, 클릭하면 오버레이가 화면에 보이도록 이벤트를 추가(한번만 해주면 됨)
-        kakao.maps.event.addListener(marker, 'click', () => {
-            removeOverlayAll()
-            overlay.setMap(map);
-            map.panTo(marker.getPosition());
-            // DB갱신을 통한 별 색상 변경
-            updateStarColor(fav.fields.title)
-        });
+            </ul>
+            `)
 
-        // 검색 결과를 클릭하면, 해당 좌표로 이동 및 오버레이 띄우게 설정
-        results.lastElementChild.addEventListener('click', () => {
-            map.panTo(marker.getPosition())
-            removeOverlayAll()
-            overlay.setMap(map);
-            // DB갱신을 통한 별 색상 변경
-            updateStarColor(fav.fields.title)
-        })
+            // 마커 객체를 생성하고, 표시할곳은 map객체 / 마커의 좌표는 position에 해당되는 값으로 설정
+            let marker = new kakao.maps.Marker({
+                map: map,
+                position: new kakao.maps.LatLng(fav.fields.lat, fav.fields.lng)
+            });
+
+            // 마커를 markers배열에 추가
+            markers.push(marker)
+
+            // 추가된 마커를 bounds에 추가
+            bounds.extend(marker.getPosition())
+
+            // 마커를 클릭했을때 나올 정보창(오버레이)의 HTML을 변수에 선언
+            let overlayContent = `
+            <div class="wrap">
+                <div class="info">
+                    <div class="title">
+                        <span class="jsplaceName">${fav.fields.title}</span>
+                        <div class="close" onclick="removeOverlayAll()" title="닫기"></div>
+                    </div>
+                    <div class="body">
+                        <div onclick="clickStar(event)" class="img">
+                            <span class="jsStar">☆</span>
+                        </div>
+                        <div class="desc">
+                            <div class="ellipsis">${fav.fields.address}</div>
+                            <div class="jibun ellipsis">${fav.fields.jibun}</div>
+                            <div><a href="${fav.fields.url}" target="_blank" class="link">홈페이지</a></div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="jsLat" value="${fav.fields.lat}"> 
+                    <input type="hidden" id="jsLng" value="${fav.fields.lng}"> 
+                </div>
+            </div>
+            `
+            // 정보창(오버레이) 객체를 생성하고, content는 위에 선언해놓은 overlayContent로,
+            // 오버레이가 위치할 map은 이전에 생성한 map객체로, 오버레이의 위치는 마커위로 설정
+            let overlay = new kakao.maps.CustomOverlay({
+                content: overlayContent,
+                map: map,
+                position: marker.getPosition()
+            });
+            overlays.push(overlay)
+            overlay.setMap(null)
+            // 위에 생성한 마커 객체(marker)에, 클릭하면 오버레이가 화면에 보이도록 이벤트를 추가(한번만 해주면 됨)
+            kakao.maps.event.addListener(marker, 'click', () => {
+                removeOverlayAll()
+                overlay.setMap(map);
+                map.panTo(marker.getPosition());
+                // DB갱신을 통한 별 색상 변경
+                updateStarColor(fav.fields.title)
+            });
+
+            // 검색 결과를 클릭하면, 해당 좌표로 이동 및 오버레이 띄우게 설정
+            results.lastElementChild.addEventListener('click', () => {
+                map.panTo(marker.getPosition())
+                removeOverlayAll()
+                overlay.setMap(map)
+                // DB갱신을 통한 별 색상 변경
+                setTimeout(updateStarColor, 100, fav.fields.title)
+            })
+        }
+        map.setBounds(bounds);
+        clusterer.addMarkers(markers)
     }
-    map.setBounds(bounds);
-    clusterer.addMarkers(markers)
 })

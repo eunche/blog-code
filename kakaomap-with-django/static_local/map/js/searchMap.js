@@ -156,7 +156,7 @@ const displayPlaces = (data) => {
             removeOverlayAll()
             overlay.setMap(map);
             // DB갱신을 통한 별 색상 변경
-            updateStarColor(i.place_name)
+            setTimeout(updateStarColor, 100, i.place_name)
         })
 
         // 검색 결과가 나왔을때, 지도의 확대정도를 정하는 bounds 변수에 마커의 좌표 추가
