@@ -17,8 +17,6 @@ const updateStarColor = (title) => {
         type: "POST",                             // HTTP 요청 방식(GET, POST)
         dataType: "json"                         // 서버에서 보내줄 데이터의 타입
     }).done(function (json) {
-        console.log(json)
-        console.log(star)
         star.innerText = json.text
         star.style.color = json.color
     })
