@@ -97,8 +97,8 @@ $.ajax({
 }).done(function (json) {
     if (json.length > 0) {
         let results = document.querySelector(".search-results");
+        let index = 1;
         for (const fav of json) {
-            let index = 1;
 
             // 왼쪽 창에 fav리스트 추가
             results.insertAdjacentHTML('beforeend', `
@@ -175,8 +175,9 @@ $.ajax({
                 // DB갱신을 통한 별 색상 변경
                 setTimeout(updateStarColor, 100, fav.fields.title)
             })
+            index += 1;
         }
         map.setBounds(bounds);
-        clusterer.addMarkers(markers)
+        clusterer.addMarkers(markers);
     }
 })
